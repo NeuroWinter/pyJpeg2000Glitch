@@ -7,6 +7,10 @@ from random import randint
 # ---------------------------------------------------------
 # path to ffmpeg bin
 FFMPEG_PATH = "D:\Glitch\Tools\\ffmpeg-20160326-git-8ff0f6a-win64-static\\ffmpeg-20160326-git-8ff0f6a-win64-static\\bin\\ffmpeg.exe"
+
+# The higher the number the more likly this is not work 50 seems to be the Max
+# best around 5 - 25
+GLITCH_PERCENTAGE = 5
 # ----------------------------------------------------------------
 # encoding script
 # --------------------------------------------------------------
@@ -78,7 +82,7 @@ def encode(file):
 
         os.chdir('jpeg2000')
         print("Done encoding " + name + " to jpeg2000")
-        hexEdit(name + ".jp2")
+        hexEdit2(name + ".jp2")
     except:
         print("error encoding " + name + " to jpeg2000")
 
@@ -90,24 +94,64 @@ def hexEdit(file):
         b = bytearray(f)
         print(b[156])
         random.seed()
-        start = randint(0, 14)
+        start = randint(0, 15)
         random.seed()
-        end = randint(0, (14 - start))
+        end = randint(0, (20 - start))
         for x in range(156 + start, (156 + end)):
             random.seed()
             b[x] = randint(0, 255)
         start = randint(0, 14)
         random.seed()
-        end = randint(0, (14 - start))
+        end = randint(0, (20 - start))
         for x in range(200 + start, (200 + end)):
             random.seed()
             b[x] = randint(0, 255)
         start = randint(0, 14)
         random.seed()
-        end = randint(0, (14 - start))
+        end = randint(0, (20 - start))
         for x in range(232 + start, (232 + end)):
             random.seed()
             b[x] = randint(0, 255)
+        with open(name + 'Hexed.jp2', 'wb') as f:
+            f.write(b)
+    decode(name + 'Hexed.jp2')
+
+
+def hexEdit2(file):
+    print("starting to hex edit 2")
+    name = ''.join(file.split('.')[:-1])
+    with open(file, "rb") as imageFile:
+        f = imageFile.read()
+        b = bytearray(f)
+        for x in range(156, 169):
+            random.seed()
+            if(random.SystemRandom().randint(0, 100) <= GLITCH_PERCENTAGE):
+                random.seed()
+                b[x] = randint(0, 255)
+        random.seed()
+        for x in range(201, 214):
+            random.seed()
+            if(random.SystemRandom().randint(0, 100) <= GLITCH_PERCENTAGE):
+                random.seed()
+                b[x] = randint(0, 255)
+        random.seed()
+        for x in range(234, 247):
+            random.seed()
+            if(random.SystemRandom().randint(0, 100) <= GLITCH_PERCENTAGE):
+                random.seed()
+                b[x] = randint(0, 255)
+        #     random.seed()
+        #     if(random.SystemRandom().randint(0, 10) & 1):
+        #         random.seed()
+        #         b[x] = randint(0, 255)
+        # for x in range(200, 214):
+        #     if(random.SystemRandom().randint(0, 10) & 1):
+        #         random.seed()
+        #         b[x] = randint(0, 255)
+        # for x in range(232, 246):
+        #     if(random.SystemRandom().randint(0, 10) & 1):
+        #         random.seed()
+        #         b[x] = randint(0, 255)
         with open(name + 'Hexed.jp2', 'wb') as f:
             f.write(b)
     decode(name + 'Hexed.jp2')
